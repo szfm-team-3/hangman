@@ -7,6 +7,10 @@ class Player:
     def __init__(self, conn, addr):
         self.conn = conn
         self.addr = addr
+        self.sentence = ''
+        self.good_letters = []
+        self.wrong_letters = []
+        self.encoded_sentence = ''
 
 def test_msg(active, passive):
     data = passive.conn.recv(1024).decode()
