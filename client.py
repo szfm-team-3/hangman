@@ -1,64 +1,52 @@
-#!/usr/bin/python3
+abc = 'AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ'
 
-import os
-import sys
+def redraw(status):
+    pass
 
-class HangMan(object):
-    hang = []
-    hang.append(' +---+')
-    hang.append(' |   |')
-    hang.append('     |')
-    hang.append('     |')
-    hang.append('     |')
-    hang.append('     |')
-    hang.append('=======')
+def is_valid_word(word):
+    if len(word) < 5 or len(word) > 20:
+        return False
+    for i in word:
+        if i not in abc and i != ' ':
+            return False
+    return True 
 
-    man = {}
-    man[0] = [' 0   |']
-    man[1] = [' 0   |', ' |   |']
-    man[2] = [' 0   |', '/|   |']
-    man[3] = [' 0   |', '/|\\  |']
-    man[4] = [' 0   |', '/|\\  |', '/    |']
-    man[5] = [' 0   |', '/|\\  |', '/ \\  |']
+def is_valid_letter(letter, data):
+    if len(letter) == 1 and letter in abc and letter not in (data):
+        return True
+    return False
 
-    pics = []
+def test_word():
+    while True:
+        print('Adj meg egy mondatot.\nCsak betűkből és szóközökből, legalább 5, de maximum 20 karakterből állhat!')
+        word = input('> ')
+        word = ' '.join(word.split()).strip().upper()
+        if is_valid_word(word):
+            print(word) # szó elküldése
+            break;
+        else:
+            redraw(0)
+            print('Nem érvényes mondat!')
+    
+def test_letter():
+    redraw(0)
+    bad_letters = "ABC"
+    secret_sentence = "K#SKuTY#"
+    
+    while True:
+        print('Hibás betűk: ', bad_letters)
+        print('Szó:', secret_sentence)
+        print('Adj meg egy betűt!')
+        letter = input('> ')
+        letter = letter.strip().upper()
+        print(bad_letters + secret_sentence)
+        if is_valid_letter(letter, bad_letters + secret_sentence): # titkosított mondat + rossz betűk összefűzve
+            print(letter) # betű elküldése
+            break
+        else:
+            redraw(0)
+            print('Nem érvényes betű!')
 
-    def __init__(self, *args, **kwargs):
-        i, j = 2, 0
-        self.pics.append(self.hang[:])
-        for ls in self.man.values():
-            pic, j = self.hang[:], 0
-            for m in ls:
-                pic[i + j] = m
-                j += 1
-            self.pics.append(pic)
+#test_word()
 
-    def getPic(self, idx, wordLen):
-        output = ""
-        for line in self.pics[idx]:
-            output += line + "\r\n"
-
-        return output
-
-    #def validate(self, word, result, missed):
-
-    def start(self):
-        clear  = lambda: os.system('clear')
-        i      = 0
-        word   = "teszt"
-
-        #output = 'The word is: ' + result
-        output = ""
-
-        while i < len(self.pics):
-            clear()
-            output = self.getPic(i, len(word)) + "\r\n" ' '
-
-            print(output)
-            inputVal = input("Adj meg egy betűt:\n")
-            print(inputVal)
-            i += 1
-        exit(0)
-
-
-a = HangMan().start()
+test_letter()
