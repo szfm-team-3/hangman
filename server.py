@@ -52,22 +52,26 @@ def start_guessing(active, passive):
             active.wrong_letters.append(letter)
         
         if is_guessing_ended(active, passive):
+            wrong_letters = ''.join(active.wrong_letters)
+            active.conn.sendall(('JATEKVEGE|' + wrong_letters + '|' + active.encoded_sentence).encode())
+            passive.conn.sendall(('JATEKVEGE|' + wrong_letters + '|' + active.encoded_sentence).encode())
             break
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    print('Server has started...')
-    s.listen()
-    conn, addr = s.accept()
-    p1 = Player(conn, addr)
-    with p1.conn:
-        print('Connected to', p1.addr)
-        p1.conn.sendall(b'VARAKOZAS|')
+while True:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        print('Server has started...')
+        s.listen()
         conn, addr = s.accept()
-        p2 = Player(conn, addr)
-        with p2.conn:
-            print('Connented to', p2.addr)
-            get_sentence(p2, p1)
-            start_guessing(p1, p2)
-            get_sentence(p1, p2)
-            start_guessing(p2, p1)
+        p1 = Player(conn, addr)
+        with p1.conn:
+            print('Connected to', p1.addr)
+            p1.conn.sendall(b'VARAKOZAS|')
+            conn, addr = s.accept()
+            p2 = Player(conn, addr)
+            with p2.conn:
+                print('Connented to', p2.addr)
+                get_sentence(p2, p1)
+                start_guessing(p1, p2)
+                get_sentence(p1, p2)
+                start_guessing(p2, p1)

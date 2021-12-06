@@ -1,5 +1,6 @@
 import socket
 from graphic import *
+import time
 
 HOST = '127.0.0.1'
 PORT = 65432
@@ -66,6 +67,10 @@ def start_game():
                     else:
                         redraw(act_state)
                         print('Nem érvényes betű!')
+            elif data[0] == 'JATEKVEGE':
+                redraw(act_state)
+                print('Forduló vége - 10 másodperc pihi')
+                time.sleep(10)
                         
 
 
