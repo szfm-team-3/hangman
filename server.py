@@ -1,7 +1,7 @@
 import socket
 import random
 
-HOST = '127.0.0.1'
+HOST = '192.168.0.191'
 PORT = 65432
 
 class Player:
