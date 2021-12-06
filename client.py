@@ -3,6 +3,7 @@ from graphic import *
 import time
 
 HOST = '127.0.0.1'
+HOST = socket.gethostbyname('szgyula.tplinkdns.com')
 PORT = 65432
 
 abc = 'AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ'
