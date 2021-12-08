@@ -68,10 +68,32 @@ def start_game():
                     else:
                         redraw(act_state)
                         print('Nem érvényes betű!')
-            elif data[0] == 'JATEKVEGE':
+            elif data[0] == 'FORDULOVEGE':
                 redraw(act_state)
+                score = data[3].split('X')
+                print('Eredmény:')
+                print('A te pontod: ' + score[0])
+                print('Ellenfél pontja: ' + score[1])
                 print('Forduló vége - 10 másodperc pihi')
                 time.sleep(10)
+            elif data[0] == 'JATEKVEGE':
+                redraw(-1)
+                score = data[2].split('X')
+                
+                print('Játék vége:')
+                print('A te pontod: ' + score[0])
+                print('Ellenfél pontja: ' + score[1])
+                score[0] = int(score[0])
+                score[1] = int(score[1])
+                
+                if score[0] > score[1]:
+                    print('Te nyertél! Gratulálok!')
+                elif score[0] < score[1]:
+                    print('Sajnos most te vesztettél, de ne add fel legközelebb te fogsz győzni!')
+                else:
+                    print('Hú ez nagyon szoros lett, ez a meccs döntetlen lett!')
+                time.sleep(10)
+                os.system(clearcmd)
                         
 
 
