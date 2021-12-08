@@ -12,6 +12,7 @@ class Player:
         self.good_letters = []
         self.wrong_letters = []
         self.encoded_sentence = ''
+        self.score = 0
         
     def is_guessed(self, sentence):
         for l in sentence:
@@ -35,8 +36,15 @@ def get_sentence(passive, active):
     passive.sentence = passive.conn.recv(1024).decode()
     
 def is_guessing_ended(active, passive):
-    if len(active.wrong_letters) >= 6 or active.is_guessed(passive.sentence):
+    if len(active.wrong_letters) >= 6:
+        active.score -= 1
+        passive.score += 1
         return True
+    if active.is_guessed(passive.sentence):
+        active.score += 1
+        passive.score -= 1
+        return True
+    return False
     
 def start_guessing(active, passive):
     while True:
@@ -53,9 +61,17 @@ def start_guessing(active, passive):
         
         if is_guessing_ended(active, passive):
             wrong_letters = ''.join(active.wrong_letters)
-            active.conn.sendall(('JATEKVEGE|' + wrong_letters + '|' + active.encoded_sentence).encode())
-            passive.conn.sendall(('JATEKVEGE|' + wrong_letters + '|' + active.encoded_sentence).encode())
+            active_score = str(active.score) + 'X' + str(passive.score)
+            passive_score = str(passive.score) + 'X' + str(active.score)
+            active.conn.sendall(('FORDULOVEGE|' + wrong_letters + '|' + active.encoded_sentence + '|' + active_score).encode())
+            passive.conn.sendall(('FORDULOVEGE|' + wrong_letters + '|' + active.encoded_sentence + '|' + passive_score).encode())
             break
+        
+def end_screen(p1, p2):
+    p1_gameend_status = str(p1.score) + 'X' + str(p2.score)
+    p2_gameend_status = str(p2.score) + 'X' + str(p1.score)
+    p1.conn.sendall(('JATEKVEGE|' + '|' + p1_gameend_status).encode())
+    p2.conn.sendall(('JATEKVEGE|' + '|' + p2_gameend_status).encode())
 
 while True:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -75,3 +91,4 @@ while True:
                 start_guessing(p1, p2)
                 get_sentence(p1, p2)
                 start_guessing(p2, p1)
+                end_screen(p1, p2)
